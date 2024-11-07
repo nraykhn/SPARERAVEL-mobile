@@ -170,5 +170,71 @@ Perbedaan antara const dan final adalah;
     }
     ```
 
+# Tugas 8
+1. **Apa kegunaan const di Flutter? Jelaskan apa keuntungan ketika menggunakan const pada kode Flutter. Kapan sebaiknya kita menggunakan const, dan kapan sebaiknya tidak digunakan?**  
+Kegunaan `const` adalah untuk membuat objek yang bersifat konstanta atau atau tidak adapat berubah. Sehingga nilai dari objek sudah ditetapkan ketika waktu *compile* dan tidak akan bisa diubah saat *runtime*.  Dengan kata lain, *compiler* sudah mengetahui sebelumnya nilai apa yang akan disimpan dalam variabel tersebut.  
 
+    Beberapa keuntungan penggunaan `const` pada *flutter code* yaitu:
+    - Mempercepat *build time*: Saat menggunakan `const` maka Flutter mengetahui bahwa widget ini tidak akan berubah, sehingga memungkinkan uuntuk membuat widget satu kali dan memnggunakannya kembali kapanpun. Oleh karena itu, ini menghemat banyak waktu selama *rendering*. Sehingga, mengurangi penggunaan CPU dan mempercepat *rendering* widget
+    - Meningkatkan keterbacaan dan mempermudah pemeliharaan aplikasi: Menggunakan `const`, berarti membuat objek yang tidak dapat diubah. Hal ini membuat kode lebih mudah untuk dipahami dan *developer* lain. Selain itu, ini juga mengurangi risiko perilaku yang tidak diharapkan dan membuat *debugging* menjadi lebih mudah
+    - Meminimalkan penggunaan memori: `const` merupakan satu contoh widget yang *reuseable* sehingga signifikan mengurangi penggunaan memorii aplikasi.  
+  
+    Sebaiknya menggunakan `const`ketika memiliki data yang tidak akan berubah selama aplikasi berjalan seperti warna, ukuran font, dsb. Kemudian saat membuat widget yang tidak memerlukan state, seperti Text, Icon, atau Image. Lalu tidak menggunakan `const` ketika memiliki data yang dapat berubah selama aplikasi berjalan. Selain itu ketika membuat widget yang memerlukan *state* seperti TextField. 
+
+2. **Jelaskan dan bandingkan penggunaan Column dan Row pada Flutter. Berikan contoh implementasi dari masing-masing layout widget ini!**   
+`Column` dan `Row` adalah dua layout widget di Flutter yang memiliki fungsi untuk mengatur tata letak elemen-elemen children secara vertikal atau horizontal.  
+Perbedaan dan contoh implementasinya adalah;  
+**a. Column:**
+- Menyusun elemen children secara vertikal (atas ke bawah).
+    ```dart
+    Column(
+    children: [
+        Text('Judul'),
+        SizedBox(height: 14.0),
+        Text('Deskripsi'),
+        SizedBox(height: 14.0),
+        ElevatedButton(
+        onPressed: () {},
+        child: Text('Tombol'),
+        ),
+    ],
+    )
+    ```  
+    **b. Row:**
+- Menyusun elemen children secara horizontal (kiri ke kanan).
+    ```dart
+    Row(
+    children: [
+        Icon(Icons.arrow_back),
+        SizedBox(width: 16.0),
+        Text('Halaman Utama'),
+        Spacer(),
+        Icon(Icons.search),
+        SizedBox(width: 16.0),
+        Icon(Icons.more_vert),
+    ],
+    )
+    ```  
+
+3. **Sebutkan apa saja elemen input yang kamu gunakan pada halaman form yang kamu buat pada tugas kali ini. Apakah terdapat elemen input Flutter lain yang tidak kamu gunakan pada tugas ini? Jelaskan!**   
+Elemen input yang saya gunakan adalah `TextFormField` yaitu elemen untuk menerima input teks dari pengguna. Beberapa elemen input yang tidak saya gunakan pada tugas ini antara lain;
+    - Checkbox: elemen untuk menerima input boolean seperti, true atau false.
+    - Switch: elemen *toggle* untuk mengubah status *active* or *non-active*. 
+    - DropdownButton: elemen untuk memilih item dari list item. 
+    - Radio: elemen untuk memiliki satu dari beberapa pilihan. 
+    - Slider: elemen untuk memilih range dari sebuat *value*. 
+4. **Bagaimana cara kamu mengatur tema (theme) dalam aplikasi Flutter agar aplikasi yang dibuat konsisten? Apakah kamu mengimplementasikan tema pada aplikasi yang kamu buat?**  
+Pada Flutter, tema dapat diatur dengan menggunakan `ThemeData` pada widget `MaterialApp`. Jika sudah menggunakan tema global, maka aplikasi akan konsisten mengikuti warna dan gaya yang telah didefinisikan. Pada aplikasi saya, saya menggunakan
+    ```dart
+    theme: ThemeData(
+            colorScheme: ColorScheme.fromSwatch(
+            primarySwatch: Colors.blueGrey,  
+            ).copyWith(secondary: ...,
+            useMaterial3: true,
+        ),
+        )
+    ```
+    Tema aplikasi saya menggunakan `ColorScheme.fromSwatch` dengan warna utama `Colors.blueGrey`. Saya juga menggunakan `Material3` yang memastikan elemen-elemen pada desain aplikasi saya memberikan tampilan yang lebih modern dan harmonis.  
+5. **Bagaimana cara kamu menangani navigasi dalam aplikasi dengan banyak halaman pada Flutter?**  
+Untuk menangani navigasi saya menggunakan `Navigator. pushReplacement()` dan `Navigator.push().` Widget Navigator menampilkan halaman-halaman yang ada kepada layar seakan sebagai sebuah tumpukan (stack). Penggunaan `Navigator.pushReplacement() `memastikan bahwa user tidak dapat kembali ke halaman sebelumnya. Sedangkan `Navigator.push()` memungkinkan user untuk kembali ke halaman sebelumnya. `Navigator.push()` akan menambahkan *route* baru diatas *route* yang sudah ada pada atas stack, sedangkan `Navigator.pushReplacement()` menggantikan *route* yang sudah ada pada atas stack dengan *route* baru tersebut. Saya juga menggunakan `ListTile` untuk membuat item menu yang mengarahkan user ke halaman tambah produk atau ke halaman utama. 
 
