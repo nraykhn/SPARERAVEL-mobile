@@ -238,3 +238,55 @@ Pada Flutter, tema dapat diatur dengan menggunakan `ThemeData` pada widget `Mate
 5. **Bagaimana cara kamu menangani navigasi dalam aplikasi dengan banyak halaman pada Flutter?**  
 Untuk menangani navigasi saya menggunakan `Navigator. pushReplacement()` dan `Navigator.push().` Widget Navigator menampilkan halaman-halaman yang ada kepada layar seakan sebagai sebuah tumpukan (stack). Penggunaan `Navigator.pushReplacement() `memastikan bahwa user tidak dapat kembali ke halaman sebelumnya. Sedangkan `Navigator.push()` memungkinkan user untuk kembali ke halaman sebelumnya. `Navigator.push()` akan menambahkan *route* baru diatas *route* yang sudah ada pada atas stack, sedangkan `Navigator.pushReplacement()` menggantikan *route* yang sudah ada pada atas stack dengan *route* baru tersebut. Saya juga menggunakan `ListTile` untuk membuat item menu yang mengarahkan user ke halaman tambah produk atau ke halaman utama. 
 
+# Tugas 9
+**1. Jelaskan mengapa kita perlu membuat model untuk melakukan pengambilan ataupun pengiriman data JSON? Apakah akan terjadi error jika kita tidak membuat model terlebih dahulu?**
+Perlu dibuatnya model untuk melakukan pengambilan ataupun pengiriman data JSON disebabkan jika  mengggunakan model;
+- data JSON yang diambil atau dikirim memiliki tipe data yang sesuai, sehingga meminimalisir runtime error karena tipe data yang tidak sesuai, sehingga model membantu untuk menjaga konsistensi akan struktur data.
+- Melakukan konversi JSON ke objek Dart dan konversi objek Dart menjadi JSON kembali lebih mudah karena ada `fromJson()` dan `toJson()`. Sehingga, ini membantu konversi data yang lebih aman dan terstruktur.
+- Lebih mudah untuk mengelola dan mencari kesalahan data yang salah tipe atau kurang.
+
+Kemudian jika tidak membuat model maka akan ada kemunginan kesalahan tipe data yang diterima, lalu tidak ada jaminan field akan terpenuhi semua, sehingga akan rentan terjadi runtime error. 
+
+**2. Jelaskan fungsi dari library http yang sudah kamu implementasikan pada tugas ini**  
+Library `http` berfungsi untuk berkomunikasi dengan Django, mengirim data (POST), mengambil data (GET) dari server, contohnya ketika mengambil daftar data Product dalam format JSON dari backend. Lalu library ini juga berfungsi untuk mengirim data product yang baru diinput oleh pengguna ke server untuk disimpan ke database dengan mengirim data JSON ke endpoint Django, lalu server akan menyimpan ke data base. Kemudian library ini juuga memastikan aplikasi menunggu dari server sebelum menampilkan data dan memberikan umpan balik berdasarkan status respons. 
+
+**3. Jelaskan fungsi dari CookieRequest dan jelaskan mengapa instance CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter.**  
+Beberapa fungsi dari CookieRequest yaitu untuk mengelola cookie auntentikasi, melakukan request http, menyimpan status apakan pengguna telah login atau belum sehingga membantu menjaga keamanan aplikasi dengan membatasi akses berdasarkan status login kemudian alasan mengapa perlu dibagikan karena untuk memastikan konsistensi autentikasi pada seluruh aplikasi, menghindari adanya login yang berulang, memudahkan management session. 
+**4. Jelaskan mekanisme pengiriman data mulai dari input hingga dapat ditampilkan pada Flutter.**
+Menambahkan 
+```dart
+<uses-permission android:name="android.permission.INTERNET" />
+``` 
+Untuk memastikan aplikasi dapat mengakses internet yang merupakan syarat penggunaan http request.
+Lalu, pengguna mengisi form pada aplikasi flutter yaitu pada aplikasi saya adalah `productentry_form.dart` kemudian data yang diisi, dilakukan validasi dengan menggunakan Form dan FormKey, lalu data tersebuut di-encode menjadi JSON dengan menggunakan jsonEncode. Flutter menggunakan library seperti http atau CookieRequest untuk mengirim POST request ke API Django. Selanjutnya Django akan memproses data yang diterima dengan membuat view yang menerima data dari permintaan POST, lalu data akan diserialize, validasi, lalu disimpan ke database. Kemudian, flutter akan melakukan GET request untuk mengambil data dari backend. Django memberikan respons yang berupa data JSON yang diambil dari database. Terakhir, data yang diterima akan diubah menjadi model Dart dengan `fromJson()`.
+
+**5. Jelaskan mekanisme autentikasi dari login, register, hingga logout. Mulai dari input data akun pada Flutter ke Django hingga selesainya proses autentikasi oleh Django dan tampilnya menu pada Flutter.**
+* Registrasi
+    - Pengguna mengisi form registrasi, lalu flutter mengirimkan datanya ke API Django dengan menggunakan POST request, terakhir data di-encode dalam bentuk format JSON
+    - Django menerima data dan memvalidasi data, jika valid maka akan disimpan ke database.  
+* Login
+    - Pengguna mengisi username dan password pada form, lalu flutter mengirimkan datanya ke API Django melalui POST request. Penggunaan CookieRequest dan http diperlukan untuk simpan cookie autentikasi pengguna. 
+    - Django menggunakan authenticate untuk validasi, lalu jika valud django akan membuat session dan akan dikembalikan session ID ke Flutter. Lalu pengguna diarahkan ke halaman utama menu. 
+* Menu
+    - Flutter menampilkan tiga button, lalu jika memilih tambah produk maka akan menampilkan form untuk menambah produk, yang mana itu sudah terintegrasi ke database Django.
+    - Jika memilih Lihat Daftar Produk maka dari Django akan dikirimkan ke Flutter data-data mana saja yang sesuai dengan user yang sedang login saat ini.
+* Logout 
+    - Flutter mengirimkan POST request ke logout django
+    - Django menghapus session pengguna dan cookie session tersebut ikut dihapus. 
+    - Flutter akna menghapus instance CookieRequest dan pengguna diarahkan ke halaman login kembali. 
+
+**6. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step! (bukan hanya sekadar mengikuti tutorial).**
+- Buat django-app bernama authentication, lalu tambahkan django-cors-headers ke requirements.txt, jalankan pip install django-cors-headers. Tambahkan corsheaders ke INSTALLED_APPS pada main project settings.py. Menambahkan corsheaders.middleware.CorsMiddleware ke MIDDLEWARE pada main project settings.py.
+- Pada app authentication, buat method views.py untuk login, register, dan logout dengan memanfaatkan django.contrib.auth. Lalu lakukan routing pada urls.py pada folder authentication. Kemudian, menambahkan path auth pada urls.py root folder.
+- Install package provider dan pbp_django_auth. Lalu saya gunakan package tersebut dengan modifikasi root widget untuk sediakan CookieRequest dan menggunakan Provider.
+- Kemudian, pada folder screen, saya tambahkan file baru untuk menangani login dan register. Kemudian untuk bagian logout itu berada di 
+- Ubah pada file main.dart dari home: MyHomePage() menjadi home: const LoginPage(). Namun, jika user belum pernah register maka akan diarahkan ke register page. 
+- Melakukan flutter pub add http untuk menambahkan package http. Karena ingin memakai http request maka harus diperbolehkan akses internet pada Flutter dengan menggunakan 
+```xml
+<uses-permission android:name="android.permission.INTERNET" />
+```
+- Membuat model pada file `mood_entry.dart` yaitu name, price, description dan quantity.
+- Melakukan fetch data dengan membuat file `list_productentry.dart` dengan memanfaatkan `fromJson()`dan fetchProduct.
+- Membuat method view pada main/views.py untuk membuat create product pada Flutter, lalu lakukan routing.
+- Hubungkan page productentry_form.dart dengan CookieRequest, lalu gunakan `postJson()` dengan model yang sudah dibuat.
+- Buat file baru untuk menampilkan detail dari setiap product. Pada detail tersebut, menampilkan nama produk, harga produk, deskripsi, dan jumlah produk. Kemudian menambahkan button untuk kembali ke halaman daftar item. 
